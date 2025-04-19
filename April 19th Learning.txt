@@ -1,0 +1,9 @@
+Java - telusko
+https://www.youtube.com/playlist?list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5
+learned threads concepts
+      #85 Threads in Java
+      #86 Multiple Threads in Java
+      #87 Threads Priority and Sleep in Java
+      #88 Runnable vs Thread in Java
+      #89 Race Condition in Java
+      #90 Thread States in Java
