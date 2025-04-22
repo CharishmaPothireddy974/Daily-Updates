@@ -1,0 +1,152 @@
+Learned Memory Management and memory allocation in java from this link:-
+http://youtube.com/watch?v=vz6vSZRuS2M&ab_channel=Concept%26%26Coding-byShrayansh
+
+Question:- When does garbagge collector comes into picture?
+Answer:- 
+🧠 What is Garbage Collection?
+Garbage Collection in Java is the automatic process of identifying and deleting objects that are no longer reachable — i.e., no live thread or variable is referencing them.
+
+🕰️ When does Garbage Collection happen? 
+Automatically by JVM:
+      The JVM decides when to run GC based on memory usage.
+      If heap memory is getting full, GC may kick in to free up unused memory.
+      You can’t predict exactly when, but it typically happens:
+            When memory is low.
+            During idle time of the application.
+            Based on GC algorithm heuristics.
+
+You can suggest it manually (but JVM might ignore you):
+      System.gc();  // This requests garbage collection
+This just sends a request, not a command.
+
+🧹 What does GC actually collect? GC collects objects in heap memory, which are: Created using new / No longer reachable (i.e., no references pointing to them)
+
+🚫 GC does NOT affect:
+      Stack memory (like local variables and method calls)
+      Static variables (until class unloading)
+      Active referenced objects
+
+🔄 Example:
+class Test {
+    public static void main(String[] args) {
+        MyObject obj = new MyObject();  // Object created in heap
+        obj = null;                     // Now it's eligible for GC
+        System.gc();                    // Suggest GC to run
+    }
+}
+Here, obj becomes eligible for GC after it’s set to null.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question:- 
+public class Demo {
+    public static void main(String[] args) {
+        String s = "hello";  // Goes into String Pool
+    }
+}
+
+Does garbagge collector deletes "hello"?
+
+Answer:- 
+public class Demo {
+    public static void main(String[] args) {
+        String s = "hello";  // Goes into String Pool
+    }
+}
+
+🧠 What happens here?
+"hello" is a string literal, so: It's stored in the String Pool. It's automatically interned and linked to the Demo class's constant pool. It exists in the special area 
+of heap memory used for interned strings (String Pool). After main() finishes, the local reference s is gone, but: ⚠️ The actual string "hello" is still not deleted, 
+because it's: In the String Pool Referenced by the Demo class metadata (the constant pool of the .class file)
+
+✅ So, when is "hello" deleted?
+It will stay in memory until one of these happens:
+
+      Condition                             |       Will "hello" be deleted?
+App finishes running                        |       ✅ Yes (JVM shuts down)
+Class Demo is unloaded (dynamic loader)     |       ✅ Yes (rare in basic apps)
+Manually removed from intern pool           |       ❌ Not possible via Java
+Garbage collector runs while app runs       |       ❌ Won’t affect it
+
+🧨 Summary:
+      . "hello" stays until JVM shuts down.
+      . It's part of the String Pool, which is tied to the lifetime of the class loader (in this case, the bootstrap class loader — which lives until the end).
+      . So in your specific case, "hello" will only be deleted when the program exits.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+There is a concept called Strong, Weak, Soft Reference. once study them.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+public class Example {
+
+    // Non-static method
+    void greet() {
+        System.out.println("Hello from non-static method!");
+    }
+
+    public static void main(String[] args) {
+        // Correct way to call a non-static method from static context
+        new Example().greet();
+    }
+}
+
+one of the way to call non-static method new Example().greet()
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+if a static method tries to access a non-static variable or method without an object, then you'll get a compile-time error—not a runtime error.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question:- Real life example of command line arguments
+
+Answer:-
+public class BillCalculator {
+    public static void main(String[] args) {
+        if (args.length < 3) {
+            System.out.println("Usage: java BillCalculator <ProductName> <Quantity> <PricePerItem>");
+            return;
+        }
+
+        String productName = args[0];
+        int quantity = Integer.parseInt(args[1]);
+        double pricePerItem = Double.parseDouble(args[2]);
+
+        double total = quantity * pricePerItem;
+
+        System.out.println("----- Bill Receipt -----");
+        System.out.println("Product: " + productName);
+        System.out.println("Quantity: " + quantity);
+        System.out.println("Price per Item: ₹" + pricePerItem);
+        System.out.println("Total Amount: ₹" + total);
+    }
+}
+
+Commands to run:- 
+      javac BillCalculator.java
+      java BillCalculator "T-Shirt" 3 499.99
+
+Output:- 
+      ----- Bill Receipt -----
+      Product: T-Shirt
+      Quantity: 3
+      Price per Item: ₹499.99
+      Total Amount: ₹1499.97
+
+🧠 Why it's useful:
+You can quickly generate bills for different products without editing the code.
+Easy for testing multiple inputs in real-time.
+Could be used in a backend batch job or automated billing system.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+      Feature         |     Varargs (...)                     |     Arrays ([])
+Argument Passing      | Individual elements                   | Must pass an array
+Minimum Arguments     | 0 or more                             | 1 array (can be empty)
+Use Case              | Flexible method calls with many args  | When the caller already has an array
+Behind the Scenes     | Internally converted to an array      | It's already an array
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
