@@ -150,3 +150,32 @@ Behind the Scenes     | Internally converted to an array      | It's already an 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Question:- Can you overload methods in Java that have varargs parameters? What potential issues can arise from overloading varargs methods?
+
+Answer:- Yes, you can overload methods that have varargs parameters in Java. However, it is important to be careful while doing so because varargs methods can lead to ambiguity in method selection, especially when a method signature can match multiple varargs combinations.
+
+Potential issues that can arise:
+      . Ambiguity in method selection: If you have multiple overloaded methods that could be invoked with varargs, the compiler might have trouble choosing the correct method. This is because varargs can be matched with any number of parameters, and the compiler might not be able to decide which method to choose if the method signatures are too similar.
+
+Example:
+class Test {
+    // Method with varargs
+    void printNumbers(int... nums) {
+        System.out.println("Varargs method");
+    }
+
+    // Method with a specific number of arguments
+    void printNumbers(int a, int b) {
+        System.out.println("Method with 2 parameters");
+    }
+    
+    public static void main(String[] args) {
+        Test t = new Test();
+        t.printNumbers(1, 2);  // Ambiguity might arise here
+    }
+}
+
+To avoid ambiguity, be cautious when overloading varargs methods and prefer making the method signatures more distinct, for example, by varying the number of parameters or their types.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
