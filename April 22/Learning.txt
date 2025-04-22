@@ -1,0 +1,65 @@
+⚠️ Multithreading is Inherently Unpredictable
+When you run this code:
+        Thread obj1 = new Thread(task, "Thread A");
+        Thread obj2 = new Thread(task, "Thread B");
+        
+        obj1.start();
+        obj2.start();
+
+You're launching two threads simultaneously. The Java thread scheduler (part of the JVM + OS) decides when each thread runs — and it can:
+      . Run them truly in parallel (on separate CPU cores), OR
+      . Context switch rapidly between them (like: A → B → A → B → ...)
+So even if there's no artificial delay (sleep()), it's still possible that:
+      . Thread A checks myInstance == null → true
+      . Thread B checks myInstance == null → still true (because A hasn't assigned yet)
+      . Both create new objects independently 😱
+That’s a race condition — two threads racing to check and assign the value of myInstance.
+
+Output:- 
+      Inside ChocoBoiler created by Thread B
+      Inside ChocoBoiler created by Thread A
+      Instance created: ChocoBoiler@2d5d2720 from Thread B
+      Instance created: ChocoBoiler@1990adec from Thread A
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+🧵 Class-Level vs. Object-Level Locks
+Object-Level Lock: Synchronizing on this or an instance ensures that only one thread can access the synchronized block for that particular instance.
+      synchronized (this) {
+          // synchronized code for instance
+      }
+
+Class-Level Lock: Synchronizing on the Class object ensures that only one thread can access the synchronized block for the entire class, 
+regardless of the number of instances.
+
+synchronized (ChocoBoiler.class) {
+    // synchronized code for class
+}
+This distinction is crucial when implementing thread-safe singletons or managing static resources.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question:- what is the use of volatile?
+
+Answer:- If two threads (Thread A and Thread B) are working on a shared object (SharedObj) that contains a field like: int sharedVariable;
+And if sharedVariable is not marked as volatile or not accessed inside a synchronized block, then:
+      . Each thread may cache its own copy of sharedVariable in its local CPU cache or register.
+      . So if Thread A updates the value, Thread B might not see the change immediately (or ever), because it may continue reading from its local stale copy.
+
+✅ Fix: Use volatile -> volatile boolean flag = false;
+This ensures:
+      . No local caching.
+      . Always reads from main memory.
+      . Writes by one thread are immediately visible to others.
+
+use of synchronized and volatile :-
+In the Double-Checked Locking pattern:
+      . synchronized: Ensures that only one thread can initialize the myInstance object at a time (i.e., the block inside the synchronized block is mutually exclusive).
+      . volatile: Ensures that once myInstance is initialized, any other thread will immediately see the fully initialized object 
+                (prevents caching or reordering of the reference assignment).
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question:- how to avoid volatile and singleton in the code?
+
+Answer:- Bill Pugh Singleton Implementation
