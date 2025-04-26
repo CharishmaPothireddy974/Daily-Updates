@@ -205,3 +205,69 @@ Focus: Create only one object.                        | Focus: Create group of r
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Question:- Both Abstract Factory and I create objects – that’s our jobs. But I do it through inheritance...
+I didn't understood this.
+
+Answer:- 
+
+First, Factory Method code:
+
+abstract class PizzaStore {  // Base class
+    abstract Pizza createPizza(String type);  // Subclass will override this
+}
+
+class NYPizzaStore extends PizzaStore {
+    Pizza createPizza(String type) {
+        return new NYStyleCheesePizza();  // Specific NY pizza
+    }
+}
+
+What’s happening here?
+. PizzaStore is an abstract class. It declares createPizza().
+. NYPizzaStore is a subclass. It overrides createPizza().
+. This is inheritance!
+   . NYPizzaStore inherits from PizzaStore.
+   . NYPizzaStore changes how pizza is created by overriding the method.
+🧠 So when they say "Factory Method uses inheritance", they mean this exact thing:
+Subclass overrides a method to create specific objects.
+
+Now, Abstract Factory code:
+
+interface PizzaIngredientFactory {  // Interface
+    Dough createDough();
+    Sauce createSauce();
+}
+
+class NYPizzaIngredientFactory implements PizzaIngredientFactory {
+    public Dough createDough() {
+        return new ThinCrustDough();
+    }
+    public Sauce createSauce() {
+        return new MarinaraSauce();
+    }
+}
+
+What’s happening here?
+. PizzaIngredientFactory is an interface — it just declares methods, no logic.
+. NYPizzaIngredientFactory implements that interface and provides real objects.
+. Later, you pass an instance of NYPizzaIngredientFactory into a Pizza class like this:
+
+PizzaIngredientFactory ingredientFactory = new NYPizzaIngredientFactory();
+Pizza pizza = new CheesePizza(ingredientFactory);
+
+. Now the pizza can use the ingredient factory to create its dough, sauce, etc.
+This is composition!
+. We compose the Pizza object with a reference to an IngredientFactory.
+. No inheritance of behavior, just using an object inside another object.
+🧠 So when they say "Abstract Factory uses composition", they mean:
+. We inject (pass) a factory object into another object to create ingredients.
+. No overriding methods — just using another object.
+
+Quick Visual Difference:- 
+Factory Method                               Abstract Factory
+NYPizzaStore extends PizzaStore (inherits) | CheesePizza has a PizzaIngredientFactory (composition)
+Override createPizza()                     | Call ingredientFactory.createDough()
+
+In short:
+✅ Factory Method = Subclass overrides a method → (inheritance)
+✅ Abstract Factory = Object uses another factory object → (composition)
