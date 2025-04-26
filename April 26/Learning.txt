@@ -16,4 +16,192 @@ Simple way to remember:
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  
+Question:- Factory Pattern vs Abstract Factory Pattern
+
+Answer:- 
+
+Factory Design Pattern
+                               Client
+                                 |
+                                 V
+                               PizzaFactory  ------------>   VegPizza
+                                               (based on)  
+                                               input      --> NonVegPizza
+
+. Client asks PizzaFactory for a pizza.
+. Factory decides whether to give VegPizza or NonVegPizza based on the input.
+👉 Only one object is created.
+
+Abstract Factory Design Pattern
+                              Client
+                                |
+                                V
+                              (Choose Factory)
+                              VegMealFactory             NonVegMealFactory
+                                   |                            |
+                                   |                            |
+                              (Burger + Fries + Drink)    (Burger + Fries + Drink)
+
+Each factory produces a family of related products:
+. VegMealFactory → VegBurger, VegFries, VegDrink
+. NonVegMealFactory → ChickenBurger, RegularFries, CokeDrink
+👉 Group of objects created together.
+
+Factory Pattern            Abstract Factory Pattern
+One factory, one object. | One factory, many related objects.
+Example: One pizza.      | Example: Full meal (Burger + Fries + Drink).
+
+Below is the code for differentiating both Factory Pattern code and Abstract Factory Pattern code
+
+Imagine:
+. AppleFactory produces:
+     . iPhone (Phone)
+     . MacBook (Laptop)
+     . iPad (Tablet)
+. SamsungFactory produces:
+     . GalaxyPhone (Phone)
+     . GalaxyBook (Laptop)
+     . GalaxyTab (Tablet)
+Each factory gives you a set of related products — same family, same brand style.
+
+Factory Pattern Code:-
+
+// Step 1: Create the Product Interface
+interface Phone {
+    void create();
+}
+
+// Step 2: Create Concrete Products
+class AndroidPhone implements Phone {
+    public void create() {
+        System.out.println("Creating an Android Phone");
+    }
+}
+
+class iPhone implements Phone {
+    public void create() {
+        System.out.println("Creating an iPhone");
+    }
+}
+
+// Step 3: Create the Factory
+class PhoneFactory {
+    public static Phone getPhone(String type) {
+        if (type.equalsIgnoreCase("ANDROID")) {
+            return new AndroidPhone();
+        } else if (type.equalsIgnoreCase("IPHONE")) {
+            return new iPhone();
+        }
+        return null;
+    }
+}
+
+// Step 4: Client Code
+public class Main {
+    public static void main(String[] args) {
+        Phone phone1 = PhoneFactory.getPhone("ANDROID");
+        phone1.create();
+        
+        Phone phone2 = PhoneFactory.getPhone("IPHONE");
+        phone2.create();
+    }
+}
+
+Abstract Factory Pattern Code (Real-World Version) :-
+
+// Abstract Products
+interface Phone {
+    void create();
+}
+interface Laptop {
+    void create();
+}
+interface Tablet {
+    void create();
+}
+
+// Concrete Products for Apple
+class iPhone implements Phone {
+    public void create() {
+        System.out.println("Creating iPhone");
+    }
+}
+class MacBook implements Laptop {
+    public void create() {
+        System.out.println("Creating MacBook");
+    }
+}
+class iPad implements Tablet {
+    public void create() {
+        System.out.println("Creating iPad");
+    }
+}
+
+// Concrete Products for Samsung
+class GalaxyPhone implements Phone {
+    public void create() {
+        System.out.println("Creating Galaxy Phone");
+    }
+}
+class GalaxyBook implements Laptop {
+    public void create() {
+        System.out.println("Creating Galaxy Book");
+    }
+}
+class GalaxyTab implements Tablet {
+    public void create() {
+        System.out.println("Creating Galaxy Tab");
+    }
+}
+
+// Abstract Factory
+interface GadgetFactory {
+    Phone createPhone();
+    Laptop createLaptop();
+    Tablet createTablet();
+}
+
+// Concrete Factories
+class AppleFactory implements GadgetFactory {
+    public Phone createPhone() { return new iPhone(); }
+    public Laptop createLaptop() { return new MacBook(); }
+    public Tablet createTablet() { return new iPad(); }
+}
+
+class SamsungFactory implements GadgetFactory {
+    public Phone createPhone() { return new GalaxyPhone(); }
+    public Laptop createLaptop() { return new GalaxyBook(); }
+    public Tablet createTablet() { return new GalaxyTab(); }
+}
+
+// Client Code
+public class Main {
+    public static void main(String[] args) {
+        GadgetFactory appleFactory = new AppleFactory();
+        Phone applePhone = appleFactory.createPhone();
+        Laptop appleLaptop = appleFactory.createLaptop();
+        Tablet appleTablet = appleFactory.createTablet();
+        
+        applePhone.create();
+        appleLaptop.create();
+        appleTablet.create();
+        
+        System.out.println("---");
+        
+        GadgetFactory samsungFactory = new SamsungFactory();
+        Phone samsungPhone = samsungFactory.createPhone();
+        Laptop samsungLaptop = samsungFactory.createLaptop();
+        Tablet samsungTablet = samsungFactory.createTablet();
+        
+        samsungPhone.create();
+        samsungLaptop.create();
+        samsungTablet.create();
+    }
+}
+
+Factory Pattern                                       | Abstract Factory Pattern
+PhoneFactory gives you one phone (Android or iPhone). | GadgetFactory gives you full set (Phone + Laptop + Tablet) for Apple or Samsung.
+Focus: Create only one object.                        | Focus: Create group of related objects together.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
