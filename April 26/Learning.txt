@@ -1,0 +1,19 @@
+Question:- what is the difference between factory pattern and strategy pattern
+
+Answer:-
+
+ Aspect                              Factory Pattern                                                              Strategy Pattern
+Purpose           | To create objects without specifying the exact class.                       | To define a family of algorithms and make them interchangeable at runtime.
+Focus             | Object Creation                                                             | Behavior Selection
+Problem it solves | When you need to decide which class to instantiate during runtime.          | When you need to switch between different behaviors/algorithms dynamically.
+Example           | A ShapeFactory creates Circle, Square, or Triangle objects based on input.  | A PaymentContext uses either CreditCardPayment, PaypalPayment, or UPIPayment 
+                                                                                                  strategy depending on user choice.
+Main Components   | Factory class, Product classes.                                             | Context class, Strategy interface, Concrete strategy classes.
+
+Simple way to remember:
+    Factory Pattern = "Which object to create?"
+    Strategy Pattern = "Which behavior/algorithm to use?"
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  
