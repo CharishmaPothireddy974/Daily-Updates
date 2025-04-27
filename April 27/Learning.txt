@@ -1,0 +1,92 @@
+Question:- It checks whether the current thread is daemon or not - what does daemon mean?
+
+Answer:-
+🔥 What is a Daemon Thread?
+. A Daemon thread is a background thread.
+. It supports other main (normal) threads, but it is not important for the application to keep running.
+. When all normal (user) threads finish, the Daemon threads automatically die — no matter what they are doing.
+
+🎯 In Simple Words:
+👉 User Thread:
+. Important work (example: Typing in Word, Playing a video).
+. Application runs because of user threads.
+👉 Daemon Thread:
+. Helper work (example: Auto-save feature, Garbage collection).
+. If no user threads are left, daemon threads also stop automatically.
+
+⚡ Example in Real Life:
+Imagine in an office:
+. User Threads are like employees — main workers.
+. Daemon Threads are like cleaners — they support workers.
+If employees go home (user threads finish),
+cleaners will also leave — they don’t stay alone in the office.
+
+⚡ Important Rules:
+            Rule                                               Meaning
+You must set daemon manually                  | Java will not automatically make any thread daemon
+setDaemon(true) must be called before start() | After starting, you cannot change it
+If you try to setDaemon after start()         | Java throws IllegalThreadStateException error
+
+In Java:
+. Threads are normal (user threads) by default.
+. If you want to make a thread a Daemon thread, you (the programmer) must manually set it before starting the thread.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question:- obj1.start();
+           obj2.start();
+
+Answer:- 
+Execution Flow of Threads:
+In your code, you are starting two threads (obj1 and obj2) using the start() method. Here's a breakdown of what happens:
+1. Creating and Starting Threads:
+. obj1.start() and obj2.start() start both threads. These threads are moved from the Runnable state to the Running state.
+. Both threads are eligible to run, but which thread actually runs depends on the thread scheduler of the JVM and the underlying operating system.
+2. Thread Scheduling:
+. Java does not guarantee that both threads will run simultaneously. Thread execution is based on the system's scheduling algorithm, which decides when each thread should run
+. If you are working on a single-core CPU, only one thread will run at any given time. The CPU will switch between threads very quickly (context switching), giving the 
+illusion of parallel execution.
+. On a multi-core CPU, threads might be able to run at the same time on different cores, but Java's thread scheduling still depends on the operating system.
+3. Runnable to Running State:
+. When start() is called on a thread, it moves from New to Runnable.
+. Once the thread scheduler picks up a thread from the Runnable queue, it transitions to the Running state. But both threads do not necessarily transition to the Running 
+state at exactly the same time.
+. The JVM and OS determine when each thread will execute, so even though both threads are in the Runnable state, only one of them is running at any given moment.
+
+Output Order:
+Since thread execution is non-deterministic, the order in which the threads print their output is not guaranteed. You might get:
+        Thread 1 is running
+        Thread 2
+Or, you might get:
+        Thread 2
+        Thread 1 is running
+It depends on the thread scheduling order, which is determined by the JVM and OS. They might even interleave the output like this:
+        Thread 1 is
+        Thread 2
+        is running
+
+In Summary:
+. Both threads are in the Runnable state after start() is called.
+. Which thread runs and when it runs depends on the thread scheduler and the system's resources (single-core vs multi-core).
+. Both threads may not run at exactly the same time unless you have multiple cores and the OS schedules them on separate cores.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Question:- t1.start();
+        t2.start();
+        t3.start();
+
+I need to execute t1 then after t2 then after t3. How?
+
+Answer:-
+To ensure that Thread 1 (t1) runs first, followed by Thread 2 (t2), and then Thread 3 (t3), we need to control the order of execution of the threads. 
+By default, threads are scheduled by the Java Virtual Machine (JVM) and the operating system, and you cannot directly control their execution order. 
+However, you can achieve this order by using the join() method.
+
+Explanation of the Changes:
+. join() method is used after starting each thread to ensure that one thread completes before the next one starts.
+    . t1.join() ensures that the main thread waits for Thread 1 to finish before starting Thread 2.
+    . Similarly, t2.join() waits for Thread 2 to finish before starting Thread 3.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
